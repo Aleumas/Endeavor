@@ -13,9 +13,10 @@ const sessionStore = useSessionStore()
 const { title: title, subject: subject, duration: duration, objectives: objectives } = storeToRefs(sessionStore);
 const index = ref(0)
 const durationOptions = ref([
-    { name: '10 mins', code: 600000 },
-    { name: '30 mins', code: 1800000 },
-    { name: '1 hour', code: 3600000 },
+    {name: '5 sec', code: 5},
+    { name: '10 mins', code: 600 },
+    { name: '30 mins', code: 1800 },
+    { name: '1 hour', code: 3600 },
 ]);
 
 const next = () => {

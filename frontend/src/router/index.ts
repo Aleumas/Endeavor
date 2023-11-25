@@ -10,19 +10,19 @@ const router = createRouter({
       component: SessionForm
     },
     {
-      path: '/selection',
-      name: 'topic-selection',
-      component: () => import('../views/ConceptSelection.vue')
-    },
-    {
       path: '/quiz',
       name: 'quiz',
-      component: () => import('../views/Quiz.vue')
+      component: () => import('../views/session/Quiz.vue')
     }, 
     {
       path: '/questions',
       name: 'questions',
       component: () => import('../views/session/Questions.vue')
+    },
+    {
+      path: '/begin',
+      name: 'begin',
+      component: () => import('../views/session/Begin.vue')
     }
   ]
 })

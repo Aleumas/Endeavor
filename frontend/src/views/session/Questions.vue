@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useQuestionStore } from '@/stores/QuestionStore'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import Inplace from 'primevue/inplace'
@@ -7,9 +6,10 @@ import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import axios from 'axios'
 import router from '@/router'
+import { useSessionStore } from '@/stores/SessionStore'
 
-const questionStore = useQuestionStore()
-const { questions: questions } = storeToRefs(questionStore);
+const sessionStore = useSessionStore()
+const { questions: questions } = storeToRefs(sessionStore);
 const newQuestion = ref("")
 const editQuestion = ref("")
 const isLoadingSuggestion = ref(false)
@@ -20,7 +20,7 @@ const editQuestionPT = computed(() => {
     }
 }) 
 const areNoQuestions = computed(() => {
-    return questionStore.questions.length == 0
+    return sessionStore.questions.length == 0
 })
 const inplacePT = computed(() => {
   return editQuestion.value != ""  ? {
@@ -35,6 +35,7 @@ const inplacePT = computed(() => {
     display: { class: 'bg-gray-800' }
   }
 })
+
 const addSuggestion = (concept: string) => {
     isLoadingSuggestion.value = true
     const questionList = questions.value.map(question => question.text).toString()
@@ -45,7 +46,7 @@ const addSuggestion = (concept: string) => {
                 text: response.data,
                 response: ""
             }
-            questionStore.add(question)
+            sessionStore.add(question)
         }
         isLoadingSuggestion.value = false
     })
@@ -73,20 +74,20 @@ const addNewQuestion = () => {
             text: newQuestion.value,
             response: ""
         }
-        questionStore.add(question)
+        sessionStore.add(question)
         newQuestion.value = ""
     }
 }
 
 const handleQuestionEditClose = (index: number) => {
     if (editQuestion.value == "") {
-        questionStore.remove(index)
+        sessionStore.remove(index)
     } else {
         const newQuestion = {
             text: editQuestion.value,
             response: ""
         }
-        questionStore.replace(newQuestion, index)
+        sessionStore.replace(newQuestion, index)
     }
     editQuestion.value = ""
 }
@@ -96,32 +97,36 @@ const handleQuestionEditOpen = (question: string) => {
 }
 
 const done = (concept: string) => {
-    isLoadingCurveBall.value = true
-    const questionList = questions.value.map(question => question.text).toString()
-    axios.get<string>(`http://localhost:8000/curve-ball/${concept}/${questionList}`)
-    .then((response) => {
-        if (response.data != "") {
-            const question = {
-                text: response.data,
-                response: ""
-            }
-            questionStore.setCurveBall(question)
-        }
-        isLoadingCurveBall.value = false
-        router.push("/quiz")
-    })
-    .catch((error) => { 
-        console.log(error) 
-        isLoadingCurveBall.value = false
-    }) 
+    router.push("/begin")
+    // isLoadingCurveBall.value = true
+    // const questionList = questions.value.map(question => question.text).toString()
+    // axios.get<string>(`http://localhost:8000/curve-ball/${concept}/${questionList}`)
+    // .then((response) => {
+    //     if (response.data != "") {
+    //         const question = {
+    //             text: response.data,
+    //             response: ""
+    //         }
+    //         sessionStore.setCurveBall(question)
+    //     }
+    //     isLoadingCurveBall.value = false
+    //     router.push("/quiz")
+    // })
+    // .catch((error) => { 
+    //     console.log(error) 
+    //     isLoadingCurveBall.value = false
+    // }) 
 }
 
+const back = () => {
+    router.push("/")
+}
 </script>
 
 <template>
     <div class="flex flex-column justify-content-center gap-3">
         <div>
-            <h2>Questions on {{ $route.params.topic }}</h2>
+            <h2>Questions on {{ sessionStore.subject }}</h2>
             <p>add questions that you would like to review.</p>
         </div>
         <div class="flex flex-column gap-4">
@@ -151,6 +156,7 @@ const done = (concept: string) => {
             </div>
             <Button @click="addNewQuestion">Add Question</Button>
             <Button v-if="!areNoQuestions" @click="() => addSuggestion($route.params.topic as string)" :loading="isLoadingSuggestion">Suggest Question ✨</Button>
+            <Button @click="back">Back</Button>
             <Button :loading="isLoadingCurveBall" @click="() => done($route.params.topic as string)">Done</Button>
         </div>
     </div>
