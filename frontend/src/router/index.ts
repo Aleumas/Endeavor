@@ -28,6 +28,16 @@ const router = createRouter({
       path: '/feedback',
       name: 'feedback',
       component: () => import('../views/feedback/Feedback.vue')
+    },
+    {
+      path: '/feedback-loader',
+      name: 'feedback-loader',
+      component: () => import('../views/feedback/FeedbackLoader.vue')
+    },
+    {
+      path: '/curveball',
+      name: 'curveball',
+      component: () => import('../views/session/Curveball.vue')
     }
   ]
 })

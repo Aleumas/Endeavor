@@ -36,10 +36,10 @@ const inplacePT = computed(() => {
   }
 })
 
-const addSuggestion = (concept: string) => {
+const addSuggestion = () => {
     isLoadingSuggestion.value = true
     const questionList = questions.value.map(question => question.text).toString()
-    axios.get<string>(`http://localhost:8000/suggestion/${concept}/${questionList}`)
+    axios.get<string>(`http://localhost:8000/suggestion/${sessionStore.subject}/${questionList}`)
     .then((response) => {
         if (response.data != "") {
             const question = {
@@ -54,18 +54,6 @@ const addSuggestion = (concept: string) => {
         console.log(error) 
         isLoadingSuggestion.value = false
     })
-
-    // axios.get<string>(`http://localhost:8000/test`)
-    // .then((response) => {
-    //     if (response.data != "") {
-    //         console.log(response.data)
-    //     }
-    //     isLoadingSuggestion.value = false
-    // })
-    // .catch((error) => { 
-    //     console.log(error) 
-    //     isLoadingSuggestion.value = false
-    // })
 }
 
 const addNewQuestion = () => {
@@ -96,26 +84,8 @@ const handleQuestionEditOpen = (question: string) => {
     editQuestion.value = question
 }
 
-const done = (concept: string) => {
-    router.push("/begin")
-    // isLoadingCurveBall.value = true
-    // const questionList = questions.value.map(question => question.text).toString()
-    // axios.get<string>(`http://localhost:8000/curve-ball/${concept}/${questionList}`)
-    // .then((response) => {
-    //     if (response.data != "") {
-    //         const question = {
-    //             text: response.data,
-    //             response: ""
-    //         }
-    //         sessionStore.setCurveBall(question)
-    //     }
-    //     isLoadingCurveBall.value = false
-    //     router.push("/quiz")
-    // })
-    // .catch((error) => { 
-    //     console.log(error) 
-    //     isLoadingCurveBall.value = false
-    // }) 
+const done = () => {
+    router.push("/begin") 
 }
 
 const back = () => {
@@ -155,9 +125,9 @@ const back = () => {
                 <InputText id="newQuestion" v-model="newQuestion" placeholder="enter a question 🫵"/>
             </div>
             <Button @click="addNewQuestion">Add Question</Button>
-            <Button v-if="!areNoQuestions" @click="() => addSuggestion($route.params.topic as string)" :loading="isLoadingSuggestion">Suggest Question ✨</Button>
+            <Button v-if="!areNoQuestions" @click="() => addSuggestion()" :loading="isLoadingSuggestion">Suggest Question ✨</Button>
             <Button @click="back">Back</Button>
-            <Button :loading="isLoadingCurveBall" @click="() => done($route.params.topic as string)">Done</Button>
+            <Button :loading="isLoadingCurveBall" @click="() => done()">Done</Button>
         </div>
     </div>
 </template>

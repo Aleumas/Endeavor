@@ -1,6 +1,7 @@
 import './assets/main.css'
 import "/node_modules/primeflex/primeflex.css"
 import "primevue/resources/themes/viva-light/theme.css";
+import 'primeicons/primeicons.css'
 
 import { createApp } from 'vue'
 import App from './App.vue'

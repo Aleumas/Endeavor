@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import router from '@/router';
 import { useSessionStore } from '@/stores/SessionStore'
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 import { storeToRefs } from 'pinia';
 
 const capitalize = (s: string) => s && s[0].toUpperCase() + s.slice(1)
@@ -11,7 +13,7 @@ const back = () => {
 }
 
 const submit = () => {
-    
+   router.push('/feedback-loader') 
 }
 
 </script>

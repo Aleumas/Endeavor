@@ -22,6 +22,7 @@ const getColorForRating = (rating: number):string => {
             return ""
     }
 }
+console.log(feedback[0].value)
 </script>
 
 <template>
@@ -35,13 +36,20 @@ const getColorForRating = (rating: number):string => {
                     togglerIcon: { class: 'text-white' }
                 }"
             :legend="individualFeedback.value.question">
-                <p class="m-0">
-                    response:
-                    {{ questions[index].response }}
-
-                    feedback:
-                    {{ individualFeedback.value.feedback }}
-                </p>
+            <div class="flex flex-column gap-3">
+                <div>
+                    <h4 class="font-bold">response:</h4>
+                    <p class="m-0">
+                        {{ individualFeedback.value.response }}
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold">feedback:</h4>
+                    <p class="m-0">
+                        {{ individualFeedback.value.feedback }}
+                    </p>
+                </div>
+            </div>
             </Fieldset>
         </div>
     </div>

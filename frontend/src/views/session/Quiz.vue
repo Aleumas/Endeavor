@@ -6,6 +6,8 @@ import { computed, ref, watch } from 'vue'
 import { useSessionStore } from '@/stores/SessionStore'
 import { storeToRefs } from 'pinia'
 import { useTimer } from 'vue-timer-hook'
+import router from '@/router'
+import { isOn } from '@vue/shared'
 
 const isQuestionAnswered = ref(false)
 const sessionStore = useSessionStore()
@@ -28,6 +30,11 @@ const progress = computed(() => {
     return Math.floor(((questionIndex.value + 1) / questions.value.length) * 100)
 })
 const next = () => {
+    if (isOnFinalQuestion.value) {
+        // throw curveball
+        router.push('/curveball')
+        return 
+    }
     questionIndex.value += 1
 }
 
@@ -36,7 +43,7 @@ const back = () => {
 }
 
 const submit = () => {
-    isQuestionAnswered.value = true
+    router.push('/feedback-loader')
 }
 
 const time = new Date();
@@ -58,7 +65,7 @@ watch(timer.isExpired, async (isExpired, _) => {
         <h2>{{ capitalize(questions[questionIndex].text) }}</h2>
         <div class="flex flex-column justify-content-center gap-3">
             <InputText id="answer" v-model="questions[questionIndex].response"/>
-            <Button type="button" @click="() => isOnFinalQuestion && !sessionHasCurveBall ? submit() : next()" >{{ !isOnFinalQuestion ? "Next" : "Finish" }}</Button>
+            <Button type="button" @click="() => isOnFinalQuestion && !sessionHasCurveBall ? submit() : next()" >{{ !isOnFinalQuestion && !sessionHasCurveBall ? "Next" : "Finish" }}</Button>
             <Button v-if="!isOnFirstQuestion" @click="back">Back</Button>
             <div v-if="isQuestionAnswered">
                 

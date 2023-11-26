@@ -11,7 +11,13 @@ export interface Question {
 export interface Feedback {
     value: {
         question: string,
-        feedback: string
+        feedback: string,
+        response: string
     }
     rating: number
+}
+
+export interface FeedbackWrapper {
+    value: Feedback,
+    question: string
 }
