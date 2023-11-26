@@ -22,21 +22,38 @@ class Concepts(BaseModel):
     """A class that acts as a wrapper for concept response from LLM."""
     value: list[str] = Field(description="The list of key concepts")
 
-@app.get("/concepts/{subject}")
-def generate_key_concepts_for_subject(subject: str) -> Concepts:
-    """A function that uses LLM to generate a list of key concepts for a given subject."""
-    parser = PydanticOutputParser(pydantic_object=Concepts)
+class QuestionFeedback(BaseModel):
+   """A class that acts as a wrapper for question feedback from LLM.""" 
+   question: str = Field(description="The question whos response is being given feedback on")
+   feedback: str = Field(description="The feedback for the response")
+
+class Feedback(BaseModel):
+    """A class that acts as a wrapper for question feedback from LLM."""
+    value: list[QuestionFeedback] = Field(description="The list of feedback"),
+    rating: int = Field(description="The rating for user response"),
+
+@app.get("/feedback/{questions}/{responses}")
+def generate_feedback_for_responses(questions: list[str], responses: list[str]) -> Feedback:
+    """A function that uses LLM to generate feedback for question responses."""
+    parser = PydanticOutputParser(pydantic_object=Feedback)
     format_instructions = parser.get_format_instructions()
-    template_text = """Compile a list of (at most) 3 essential concepts related to {subject} 
+    template_text = """generate feedback on the following responses: \n
+                    '''{response}'''\n
+                    to the following questions:
+                    '''{questions}'''
+                    Ensure that the feedback is formative in nature, focusing on guiding improvement rather 
+                    than just providing a score. Point out specific strengths and areas for growth. For example, 
+                    instead of saying, "Incorrect answer," you might say, 
+                    "You correctly identified X, but consider exploring Y in more detail." Additionally, generate a rating on how much the response showed mastery (use a scale from 1-5, 5 being moderate mastery).
                     to enhance effective learning for students.\n\n{format_instructions}"""
     prompt_template = PromptTemplate(
         template=template_text,
-        input_variables=["subject"],
+        input_variables=["questions", "responses"],
         partial_variables={"format_instructions": format_instructions}
     )
 
     chain = prompt_template | llm | parser
-    return chain.invoke({"subject": subject})
+    return chain.invoke({"questions": questions, "responses": responses})
 
 @app.get("/feedback/{subject}/{question}/{response}")
 def generate_feedback_for_response(concept: str, question: str, response: str) -> str:

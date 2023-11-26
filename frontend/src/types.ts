@@ -7,3 +7,11 @@ export interface Question {
     text: string,
     response: string
 }
+
+export interface Feedback {
+    value: {
+        question: string,
+        feedback: string
+    }
+    rating: number
+}

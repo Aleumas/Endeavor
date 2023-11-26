@@ -23,6 +23,11 @@ const router = createRouter({
       path: '/begin',
       name: 'begin',
       component: () => import('../views/session/Begin.vue')
+    },
+    {
+      path: '/feedback',
+      name: 'feedback',
+      component: () => import('../views/feedback/Feedback.vue')
     }
   ]
 })

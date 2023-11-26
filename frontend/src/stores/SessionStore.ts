@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import type { Question } from '@/types'
+import {v4 as uuidv4} from 'uuid'
 
 export const useSessionStore = defineStore("SessionStore", {
     state: () => ({
@@ -11,7 +12,8 @@ export const useSessionStore = defineStore("SessionStore", {
         curveBall: {
             text: "",
             response: ""
-        } as Question
+        } as Question,
+        id: uuidv4()
     }),
     actions: {
         add(question: Question) {
